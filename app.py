@@ -456,7 +456,7 @@ if app_view == "🔵 OPERATE":
                     if not api_key: st.error("⚠️ API Key missing.")
                     else:
                         genai.configure(api_key=api_key)
-                        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                        model = genai.GenerativeModel('gemini-2.5-flash')
                         t_box = st.empty()
                         full_res = ""
                         for chunk in model.generate_content(prompt, stream=True):
