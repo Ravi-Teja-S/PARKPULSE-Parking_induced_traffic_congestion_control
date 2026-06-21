@@ -600,8 +600,8 @@ elif app_view == "🧠 EXPLAIN":
     if not top_threats.empty:
         
         @st.cache_resource
-        def load_explainer(model):
-            return shap.TreeExplainer(model)
+        def load_explainer(_model):
+            return shap.TreeExplainer(_model)
 
         explainer = load_explainer(xgb_model)
         top_10 = top_threats.head(10).copy()
