@@ -1,0 +1,7 @@
+Feature,Importance_Score
+rolling_3h_avg,0.45264316
+avg_impact,0.2815293
+historical_risk_score,0.118166745
+lag_1h_violations,0.08141536
+hour,0.03692233
+dow,0.029323092
