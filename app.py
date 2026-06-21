@@ -11,6 +11,8 @@ import warnings
 import folium
 from folium.plugins import HeatMapWithTime
 import streamlit.components.v1 as components
+
+
 warnings.filterwarnings('ignore')
 
 # ==========================================
@@ -21,96 +23,36 @@ st.set_page_config(page_title="ParkPulse Command Center", layout="wide", initial
 st.markdown("""
 <style>
     /* 1. PREVENT GLOBAL SCROLL BAR JUMPING BUT ALLOW SCROLLING */
-    [data-testid="stAppViewContainer"] {
-        background-color: #0e1117;
-        overflow-y: auto !important; /* Changed from hidden to allow smaller screens to scroll */
-    }
-
-    /* 2. SECURE PADDING TO KEEP HEADER VISIBLE AT THE VERY TOP */
-    .block-container {
-        padding-top: 0rem !important;
-        padding-bottom: 2rem !important;
-        max-width: 98% !important;
-    }
-
-    /* 3. HIDE NATIVE STREAMLIT HEADERS */
-    header {display: none !important;}
-    footer {display: none !important;}
-
-    /* 4. CUSTOM CYBERPUNK SCROLLBARS */
+    [data-testid="stAppViewContainer"] { background-color: #0e1117; overflow-y: auto !important; }
+    .block-container { padding-top: 0rem !important; padding-bottom: 2rem !important; max-width: 98% !important; }
+    header {display: none !important;} footer {display: none !important;}
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #31333F; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #00a4ff; }
 
-    /* 5. METRIC CARDS */
-    .metric-card {
-        background-color: #1e212b; border-top: 3px solid #31333F;
-        padding: 4px; /* Reduced from 10px */
-        border-radius: 5px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
+    /* 2. METRIC CARDS */
+    .metric-card { background-color: #1e212b; border-top: 3px solid #31333F; padding: 4px; border-radius: 5px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     .metric-title { color: #8a8d93; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
-    .metric-value { color: #ffffff; font-size: 18px; /* Reduced from 24px */ font-weight: 700; margin: 0px; /* Removed margin */ font-family: monospace;}
-    .accent-red { border-top-color: #ff4b4b; }
-    .accent-blue { border-top-color: #00a4ff; }
-    .accent-orange { border-top-color: #ffa421; }
-    .accent-green { border-top-color: #21c354; }
+    .metric-value { color: #ffffff; font-size: 18px; font-weight: 700; margin: 0px; font-family: monospace;}
+    .accent-red { border-top-color: #ff4b4b; } .accent-blue { border-top-color: #00a4ff; }
+    .accent-orange { border-top-color: #ffa421; } .accent-green { border-top-color: #21c354; }
     .sub-text { color: #666; font-size: 8px; font-family: monospace; line-height: 1;}
 
-    /* 6. COMPONENT STYLING */
-    div.stButton > button:first-child {
-        font-family: monospace; font-weight: bold; font-size: 12px;
-        border-radius: 4px; border: 1px solid #31333F;
-    }
-
-    /* --- SLEEK PILL-SHAPED RADIO TOGGLE --- */
-    div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: inline-flex;
-        background-color: #0e1117; /* Dark background container */
-        border-radius: 50px;
-        padding: 4px;
-        border: 1px solid #31333F; /* Subtle outer border */
-        gap: 4px;
-    }
-
-    /* Individual Toggle Options */
-    div[data-testid="stRadio"] div[role="radiogroup"] label {
-        background-color: transparent;
-        padding: 6px 18px !important;
-        border-radius: 50px !important;
-        cursor: pointer;
-        margin: 0;
-        transition: all 0.2s ease;
-        border: 1px solid transparent; /* Prevents layout shift on active state */
-    }
-
-    /* Hide the native radio circles */
-    div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child {
-        display: none !important;
-    }
-
-    /* Style the text */
-    div[data-testid="stRadio"] div[role="radiogroup"] label p {
-        margin: 0 !important;
-        font-family: monospace;
-        font-size: 12px;
-        font-weight: 700;
-        color: #8a8d93; /* Dim inactive text */
-    }
-
-    /* ACTIVE STATE: When the hidden input is checked */
-    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
-        background-color: #1e212b !important; /* Lighter active background */
-        border: 1px solid #31333F;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    /* ACTIVE TEXT: Make the selected text pop */
-    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p {
-        color: #ffffff !important;
-    }
+    /* 3. COMPONENT STYLING */
+    div.stButton > button:first-child { font-family: monospace; font-weight: bold; font-size: 12px; border-radius: 4px; border: 1px solid #31333F; }
+    div[data-testid="stRadio"] > div[role="radiogroup"] { display: inline-flex; background-color: #0e1117; border-radius: 50px; padding: 4px; border: 1px solid #31333F; gap: 4px; }
+    div[data-testid="stRadio"] div[role="radiogroup"] label { background-color: transparent; padding: 6px 18px !important; border-radius: 50px !important; cursor: pointer; margin: 0; transition: all 0.2s ease; border: 1px solid transparent; }
+    div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] label p { margin: 0 !important; font-family: monospace; font-size: 12px; font-weight: 700; color: #8a8d93; }
+    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) { background-color: #1e212b !important; border: 1px solid #31333F; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p { color: #ffffff !important; }
+    
+    .terminal-box { background-color: #0e1117; padding: 15px; border-radius: 5px; border: 1px solid #31333F; border-left: 3px solid #00a4ff; min-height: 150px; margin-top: 10px; margin-bottom: 10px; font-size: 13px; font-family: monospace; color: #e0e0e0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); overflow-y: auto; }
 </style>
 """, unsafe_allow_html=True)
+
+
 
 # ==========================================
 # STATE INITIALIZATION
@@ -119,7 +61,13 @@ if "map_center" not in st.session_state: st.session_state.map_center = [12.9716,
 if "map_zoom" not in st.session_state: st.session_state.map_zoom = 12
 if "is_animating" not in st.session_state: st.session_state.is_animating = False
 if "advisor_view" not in st.session_state: st.session_state.advisor_view = "brief"
-
+# New Integrated States
+if "selected_target" not in st.session_state: st.session_state.selected_target = None
+if "sim_data" not in st.session_state: st.session_state.sim_data = {}
+if "queue_status" not in st.session_state: st.session_state.queue_status = {}
+# FIX: Add these two lines to initialize the terminal state!
+if "show_terminal" not in st.session_state: st.session_state.show_terminal = False
+if "briefing_text" not in st.session_state: st.session_state.briefing_text = ""
 def set_map_view(lat, lon, zoom):
     st.session_state.map_center = [lat, lon]
     st.session_state.map_zoom = zoom
@@ -132,7 +80,6 @@ def toggle_animation():
 # ==========================================
 @st.cache_data
 def load_data():
-    # Adding safe fallbacks in case files are missing during testing
     try:
         df = pd.read_parquet("data/processed/hotspot_features.parquet")
         history = pd.read_csv("data/processed/hotspot_history.csv")
@@ -140,29 +87,17 @@ def load_data():
     except Exception as e:
         st.error(f"Data loading error: {e}. Please ensure data pipeline is run.")
         st.stop()
-
-    try:
-        shap_df = pd.read_csv("data/processed/feature_importance.csv")
-    except:
-        shap_df = pd.DataFrame({
-            "Feature": ["rolling_3h_avg", "avg_impact", "historical_risk", "lag_1h", "hour"],
-            "Importance_Score": [0.45, 0.28, 0.11, 0.06, 0.03]
-        })
-
-    # Create a mapping from grid_lat/lon to a representative location string
-    # Group by grid_lat, grid_lon and get the first non-null location
+    try: shap_df = pd.read_csv("data/processed/feature_importance.csv")
+    except: shap_df = pd.DataFrame({"Feature": ["rolling_3h_avg", "avg_impact", "historical_risk", "lag_1h", "hour"], "Importance_Score": [0.45, 0.28, 0.11, 0.06, 0.03]})
+    
     grid_location_map = df.groupby(['grid_lat', 'grid_lon'])['location'].first().reset_index()
     grid_location_map = grid_location_map.rename(columns={'location': 'resolved_location'})
-
     return df, history, bias, shap_df, grid_location_map
 
 @st.cache_resource
 def load_model():
-    try:
-        return joblib.load("models/forecast_model.pkl")
-    except Exception as e:
-        st.error(f"Model loading error: {e}. Ensure model is trained.")
-        st.stop()
+    try: return joblib.load("models/forecast_model.pkl")
+    except Exception as e: st.error(f"Model loading error: {e}"); st.stop()
 
 df, history, bias, shap_df, grid_location_map = load_data()
 xgb_model = load_model()
@@ -172,30 +107,23 @@ xgb_model = load_model()
 # ==========================================
 top1, top2 = st.columns([6, 4])
 with top1:
-    # Changed from <h3> to <h4> and forced margins to 0
     st.markdown("<h4 style='color: #00a4ff; margin: 0px; padding: 0px; font-family: monospace;'>PARKPULSE · COMMAND CENTER</h4>", unsafe_allow_html=True)
     st.markdown("<div style='color: #8a8d93; font-size: 10px; font-family: monospace; letter-spacing: 1px; margin-top: -5px;'>BENGALURU TRAFFIC POLICE · AI ENFORCEMENT CONSOLE</div>", unsafe_allow_html=True)
 with top2:
-    # Removed the <br> tag that was pushing the radio button down
     app_view = st.radio("VIEW", ["🔵 OPERATE", "🧠 EXPLAIN"], horizontal=True, label_visibility="collapsed")
 
-# Tightened the horizontal line margins
 st.markdown("<hr style='margin: 2px 0px 8px 0px; border-color: #333;'>", unsafe_allow_html=True)
 
 col_anim, col_date, col_slider, col_sim = st.columns([1.5, 2, 6, 2.5])
-with col_anim:
-    st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
-with col_date:
-    selected_date = st.date_input("DATE", value=df['date'].min(), min_value=df['date'].min(), max_value=df['date'].max(), label_visibility="collapsed")
-with col_slider:
-    selected_hour = st.slider("HOUR", 0, 23, 10, label_visibility="collapsed")
+with col_anim: st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
+with col_date: selected_date = st.date_input("DATE", value=df['date'].min(), min_value=df['date'].min(), max_value=df['date'].max(), label_visibility="collapsed")
+with col_slider: selected_hour = st.slider("HOUR", 0, 23, 10, label_visibility="collapsed")
 with col_sim:
     simulated_now = pd.to_datetime(f"{selected_date} {selected_hour}:00:00").tz_localize("Asia/Kolkata")
     st.markdown(f"<div style='text-align: right; color: #8a8d93; font-family: monospace; font-size: 12px; margin-top: 5px;'>SIM · {simulated_now.strftime('%Y-%m-%dT%H:%M:%S')}</div>", unsafe_allow_html=True)
 cutoff_time = simulated_now - pd.Timedelta(minutes=60)
 future_hour = (selected_hour + 1) % 24
 
-# Handle bias confidence logic safely
 confidence_arr = bias[bias["hour"] == selected_hour]["reporting_confidence"].values
 confidence = confidence_arr[0] if len(confidence_arr) > 0 else 0.5
 
@@ -212,10 +140,8 @@ if len(live_df) > 10:
     active = live_df[live_df["live_cluster"] != -1]
     if not active.empty:
         live_stats = active.groupby("live_cluster").agg(
-            live_violations=("device_id", "count"),
-            live_impact=("base_impact_score", "sum"),
-            grid_lat=("grid_lat", "first"),
-            grid_lon=("grid_lon", "first")
+            live_violations=("device_id", "count"), live_impact=("base_impact_score", "sum"),
+            grid_lat=("grid_lat", "first"), grid_lon=("grid_lon", "first")
         ).reset_index()
         live_stats["live_density_score"] = (live_stats["live_impact"] / 500 * 100).clip(upper=100)
 
@@ -231,16 +157,10 @@ dispatch_grid["rolling_3h_avg"] = dispatch_grid["historical_risk_score"] * 0.3
 dispatch_grid["avg_impact"] = 25.0
 
 xgb_features = ["hour", "dow", "historical_risk_score", "lag_1h_violations", "rolling_3h_avg", "avg_impact"]
-
-# Predict
 dispatch_grid["xgb_probability"] = xgb_model.predict_proba(dispatch_grid[xgb_features])[:, 1]
 W_live, W_hist, W_xgb = (0.4, 0.2, 0.4) if confidence >= 0.30 else (0.0, 0.5, 0.5)
 dispatch_grid["final_risk_score"] = ((dispatch_grid["live_density_score"] * W_live) + (dispatch_grid["historical_risk_score"] * W_hist) + ((dispatch_grid["xgb_probability"] * 100) * W_xgb))
-top_threats = dispatch_grid.sort_values(
-    "final_risk_score",
-    ascending=False
-).head(20)
-# Merge resolved locations into top_threats
+top_threats = dispatch_grid.sort_values("final_risk_score", ascending=False).head(20)
 top_threats = top_threats.merge(grid_location_map, on=['grid_lat', 'grid_lon'], how='left')
 top_threats['resolved_location'] = top_threats['resolved_location'].fillna('Unknown Location')
 
@@ -248,428 +168,306 @@ top_threats['resolved_location'] = top_threats['resolved_location'].fillna('Unkn
 # GLOBAL KPIs
 # ==========================================
 m1, m2, m3, m4, m5, m6 = st.columns(6)
-with m1: st.markdown(f"<div class='metric-card accent-blue'><div class='metric-title'>Violations (Slice)</div><div class='metric-value'>⚠ {len(live_df):,}</div><div class='sub-text'>Last 60 Mins</div></div>", unsafe_allow_html=True)
-with m2: st.markdown(f"<div class='metric-card accent-orange'><div class='metric-title'>Active Hotspots</div><div class='metric-value'>◎ {len(live_stats) if not live_stats.empty else 0}</div><div class='sub-text'>Spatio-Temporal</div></div>", unsafe_allow_html=True)
-with m3: st.markdown(f"<div class='metric-card accent-red'><div class='metric-title'>Predicted Zones</div><div class='metric-value'>⭕ {len(top_threats)}</div><div class='sub-text'>Next Hour</div></div>", unsafe_allow_html=True)
-with m4: st.markdown(f"<div class='metric-card accent-blue'><div class='metric-title'>Confidence</div><div class='metric-value'>⏱ {confidence*100:.0f}%</div><div class='sub-text'>{'⚠️ Failover' if confidence < 0.3 else 'Sensors OK'}</div></div>", unsafe_allow_html=True)
-with m5: st.markdown(f"<div class='metric-card accent-green'><div class='metric-title'>Σ Delay (Min)</div><div class='metric-value'>∿ {len(live_df)*2.5:,.0f}</div><div class='sub-text'>Commuter-Min</div></div>", unsafe_allow_html=True)
-with m6: st.markdown(f"<div class='metric-card accent-green'><div class='metric-title'>Peak Hour</div><div class='metric-value'>📍 {df['hour'].value_counts().idxmax()}:00</div><div class='sub-text'>Historical Mode</div></div>", unsafe_allow_html=True)
+with m1: st.markdown(f"<div class='metric-card accent-blue'><div class='metric-title'>Violations</div><div class='metric-value'>⚠ {len(live_df):,}</div></div>", unsafe_allow_html=True)
+with m2: st.markdown(f"<div class='metric-card accent-orange'><div class='metric-title'>Active Hotspots</div><div class='metric-value'>◎ {len(live_stats) if not live_stats.empty else 0}</div></div>", unsafe_allow_html=True)
+with m3: st.markdown(f"<div class='metric-card accent-red'><div class='metric-title'>Predicted Zones</div><div class='metric-value'>⭕ {len(top_threats)}</div></div>", unsafe_allow_html=True)
+with m4: st.markdown(f"<div class='metric-card accent-blue'><div class='metric-title'>Confidence</div><div class='metric-value'>⏱ {confidence*100:.0f}%</div></div>", unsafe_allow_html=True)
+with m5: st.markdown(f"<div class='metric-card accent-green'><div class='metric-title'>Σ Delay (Min)</div><div class='metric-value'>∿ {len(live_df)*2.5:,.0f}</div></div>", unsafe_allow_html=True)
+with m6: st.markdown(f"<div class='metric-card accent-green'><div class='metric-title'>Peak Hour</div><div class='metric-value'>📍 {df['hour'].value_counts().idxmax()}:00</div></div>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
-CONTAINER_HEIGHT = 560
+CONTAINER_HEIGHT = 450
 
 # ==========================================
 # VIEW ROUTING
 # ==========================================
 if app_view == "🔵 OPERATE":
-    col_left, col_center, col_right = st.columns([2.5, 5.5, 3])
+    col_left, col_center, col_right = st.columns([2.5, 5.5, 3.5])
 
-    # ---- LEFT COLUMN (SCROLLABLE PANE) ----
+    # ---- LEFT COLUMN ----
     with col_left:
         with st.container(height=CONTAINER_HEIGHT):
-            # st.markdown("<div style='background-color: #1e212b; padding: 15px; border-radius: 5px; border-top: 2px solid #31333F;'>", unsafe_allow_html=True)
             st.markdown("<b style='color:#8a8d93; font-size:11px; font-family:monospace; letter-spacing:1px;'>VIOLATIONS · HOUR OF DAY</b>", unsafe_allow_html=True)
-
             hourly_dist = df.groupby('hour').size().reset_index(name='count')
             hourly_dist['color'] = np.where((hourly_dist['hour'] >= 9) & (hourly_dist['hour'] <= 12), '#ff4b4b', '#00a4ff')
-            chart = alt.Chart(hourly_dist).mark_bar().encode(
-                x=alt.X('hour:O', title=None, axis=alt.Axis(labelAngle=0, labelColor='#8a8d93')),
-                y=alt.Y('count:Q', title=None, axis=alt.Axis(labelColor='#8a8d93')),
-                color=alt.Color('color:N', scale=None)
-            ).properties(height=140).configure_view(strokeWidth=0).configure_axis(grid=False)
-
+            chart = alt.Chart(hourly_dist).mark_bar().encode(x=alt.X('hour:O', title=None, axis=alt.Axis(labelAngle=0, labelColor='#8a8d93')), y=alt.Y('count:Q', title=None, axis=alt.Axis(labelColor='#8a8d93')), color=alt.Color('color:N', scale=None)).properties(height=140).configure_view(strokeWidth=0).configure_axis(grid=False)
             st.altair_chart(chart, use_container_width=True)
 
             st.markdown("<hr style='margin: 5px 0; border-color: #31333F;'>", unsafe_allow_html=True)
             st.markdown("<b style='color:#8a8d93; font-size:11px; font-family:monospace; letter-spacing:1px;'>VEHICLE-TYPE IMPACT</b>", unsafe_allow_html=True)
-
             v_stats = df["true_vehicle_type"].value_counts().head(5).reset_index()
             v_stats.columns = ['Type', 'Count']
-            v_chart = alt.Chart(v_stats).mark_bar(color='#ffa421', size=12).encode(
-                x=alt.X('Count:Q', title=None, axis=alt.Axis(labels=False, ticks=False)),
-                y=alt.Y('Type:N', title=None, sort='-x', axis=alt.Axis(labelColor='#8a8d93', labelFont='monospace'))
-            ).properties(height=130).configure_view(strokeWidth=0).configure_axis(grid=False)
-
+            v_chart = alt.Chart(v_stats).mark_bar(color='#ffa421', size=12).encode(x=alt.X('Count:Q', title=None, axis=alt.Axis(labels=False, ticks=False)), y=alt.Y('Type:N', title=None, sort='-x', axis=alt.Axis(labelColor='#8a8d93', labelFont='monospace'))).properties(height=130).configure_view(strokeWidth=0).configure_axis(grid=False)
             st.altair_chart(v_chart, use_container_width=True)
 
-            # FIX: Combine the closing div and use a negative top margin (-30px)
-            # to pull the title up over Streamlit's invisible chart padding.
-            st.markdown("""
-            </div>
-            <div style='margin-top: -30px; margin-bottom: 0px;'>
-                <b style='color:#21c354; font-size:12px; font-family:monospace; letter-spacing:1px;'>⚡ LIVE ALERTS FEED</b>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""</div><div style='margin-top: -25px; margin-bottom: 5px;'><b style='color:#21c354; font-size:12px; font-family:monospace; letter-spacing:1px;'>⚡ LIVE ALERTS FEED</b></div>""", unsafe_allow_html=True)
 
-            # --- THE NESTED SCROLLING LIVE FEED ---
-            feed_html = "<div style='height: 200px; overflow-y: auto; padding-right: 5px; margin-top: 5px;'>"
-            for _, row in live_df.sort_values("created_ist", ascending=False).head(30).iterrows():
-                viol_type = str(row.get('violation_type', 'UNKNOWN')).upper().replace('[', '').replace(']', '').replace('"', '').replace("'", '')
-                if len(viol_type) > 15: viol_type = viol_type[:15] + "..."
-                loc = str(row.get('location', 'Unknown Location'))
-                if len(loc) > 35: loc = loc[:35] + "..."
-                v_type = str(row.get('true_vehicle_type', 'VEHICLE')).upper()
-                time_str = row['created_ist'].strftime('%I:%M %p')
+            # Native Streamlit Scrollable Feed
+            with st.container(height=230):
+                for idx, row in live_df.sort_values("created_ist", ascending=False).head(20).iterrows():
+                    viol_type = str(row.get('violation_type', 'UNKNOWN')).upper()[:15]
+                    time_str = row['created_ist'].strftime('%I:%M %p')
+                    # Instant offline lookup!
+                    raw_loc = str(row.get('location', f"Grid {row['latitude']:.4f}, {row['longitude']:.4f}"))
+                    short_addr = ", ".join(raw_loc.split(',')[:2]).strip()
+                    
+                    st.markdown(f"<div style='display:flex; justify-content:space-between; font-family:monospace; font-size:10px;'><span style='color:#00a4ff; font-weight:bold;'>MONITOR • {viol_type}</span><span style='color:#8a8d93;'>{time_str}</span></div>", unsafe_allow_html=True)
+                    
+                    c1, c2 = st.columns([7, 3])
+                    with c1: st.markdown(f"<div style='color:#fff; font-size:11px; font-family:sans-serif;'>{short_addr}</div>", unsafe_allow_html=True)
+                    with c2:
+                        if st.button("🎯", key=f"feed_{idx}", use_container_width=True):
+                            st.session_state.selected_target = {
+                                'id': f"live_{idx}", 'lat': row['latitude'], 'lon': row['longitude'],
+                                'risk': row.get('base_impact_score', 10) * 5, # Estimated raw risk for live items
+                                'address': short_addr
+                            }
+                            set_map_view(row['latitude'], row['longitude'], 16)
+                            st.rerun()
+                    st.markdown("<hr style='margin: 4px 0; border-color: #1e212b;'>", unsafe_allow_html=True)
 
-                block = f"<div style='margin-bottom: 12px; border-bottom: 1px solid #1e212b; padding-bottom: 8px;'><div style='display:flex; justify-content:space-between; font-family:monospace; font-size:10px;'><span style='color:#00a4ff; font-weight:bold;'>MONITOR • {viol_type}</span><span style='color:#8a8d93;'>{time_str}</span></div><div style='color:#fff; font-size:11px; margin: 4px 0; font-family:sans-serif;'>{loc}</div><div style='display:flex; justify-content:space-between; font-family:monospace; font-size:10px; color:#8a8d93;'><span>{v_type}</span><span>{row.get('base_impact_score', 10) * 0.2:.1f}m delay</span></div></div>"
-                feed_html += block
-            feed_html += "</div>"
-            st.markdown(feed_html, unsafe_allow_html=True)
-
-    # ---- CENTER COLUMN (HIGH-PERFORMANCE PYDECK MAP) ----
-    # with col_center:
-
-    #     def get_color(score):
-    #         if score >= 75: return [255, 75, 75, 200]       # Red
-    #         elif score >= 50: return [255, 164, 33, 200]    # Orange
-    #         else: return [0, 164, 255, 200]                 # Blue
-
-    #     def get_action(score):
-    #         if score >= 75: return "TOW IMMEDIATELY"
-    #         elif score >= 50: return "DEPLOY PATROL"
-    #         else: return "MONITOR"
-
-    #     if not top_threats.empty:
-    #         top_threats["color"] = top_threats["final_risk_score"].apply(get_color)
-    #         top_threats["action_text"] = top_threats["final_risk_score"].apply(get_action)
-    #         top_threats["radius"] = top_threats["final_risk_score"].apply(lambda x: max(150, x * 4))
-
-    #         layer = pdk.Layer(
-    #             'ScatterplotLayer',
-    #             data=top_threats,
-    #             get_position='[grid_lon, grid_lat]',
-    #             get_color='color',
-    #             get_radius='radius',
-    #             pickable=True,
-    #             opacity=0.8,
-    #             stroked=True,
-    #             filled=True,
-    #             radius_scale=1,
-    #             radius_min_pixels=5,
-    #             radius_max_pixels=30,
-    #         )
-
-    #         view_state = pdk.ViewState(
-    #             latitude=st.session_state.map_center[0],
-    #             longitude=st.session_state.map_center[1],
-    #             zoom=st.session_state.map_zoom,
-    #             pitch=0
-    #         )
-
-    #         tooltip = {
-    #             "html": "<b>Risk Score:</b> {final_risk_score} <br/>"
-    #                     "<b>AI Probability:</b> {xgb_probability} <br/>"
-    #                     "<b>Location:</b> {resolved_location} <br/>"
-    #                     "<b>Action:</b> <span style='color: white;'>{action_text}</span>",
-    #             "style": {"backgroundColor": "#1e212b", "color": "#8a8d93", "fontFamily": "monospace"}
-    #         }
-
-    #         r = pdk.Deck(
-    #             layers=[layer],
-    #             initial_view_state=view_state,
-    #             tooltip=tooltip,
-    #         )
-
-    #         # Map fills the container cleanly
-    #         st.pydeck_chart(r, use_container_width=True)
-
-    #     else:
-    #         st.info("No active threats detected in this time slice.")
-    # ---- CENTER COLUMN (HIGH-PERFORMANCE PYDECK MAP & ANIMATION) ----
+    # ---- CENTER COLUMN ----
     with col_center:
-        
         if not st.session_state.is_animating:
-            # --- STATIC PYDECK STATE ---
+            # ==========================================
+            # STATIC STATE (NATIVE PYDECK)
+            # ==========================================
             def get_color(score):
-                if score >= 75: return [255, 75, 75, 200]       # Red
-                elif score >= 50: return [255, 164, 33, 200]    # Orange
-                else: return [0, 164, 255, 200]                 # Blue
-
-            def get_action(score):
-                if score >= 75: return "TOW IMMEDIATELY"
-                elif score >= 50: return "DEPLOY PATROL"
-                else: return "MONITOR"
+                if score >= 75: return [255, 75, 75, 200]
+                elif score >= 50: return [255, 164, 33, 200]
+                else: return [0, 164, 255, 200]
 
             if not top_threats.empty:
                 top_threats["color"] = top_threats["final_risk_score"].apply(get_color)
-                top_threats["action_text"] = top_threats["final_risk_score"].apply(get_action)
                 top_threats["radius"] = top_threats["final_risk_score"].apply(lambda x: max(150, x * 4))
+                
+                map_layers = []
 
-                layer = pdk.Layer(
-                    'ScatterplotLayer',
-                    data=top_threats,
-                    get_position='[grid_lon, grid_lat]',
-                    get_color='color',
-                    get_radius='radius',
-                    pickable=True,
-                    opacity=0.8,
-                    stroked=True,
-                    filled=True,
-                    radius_scale=1,
-                    radius_min_pixels=5,
-                    radius_max_pixels=30,
-                )
+                # Highlight target with Concentric Rings
+                if st.session_state.selected_target:
+                    tgt_lat, tgt_lon = st.session_state.selected_target['lat'], st.session_state.selected_target['lon']
+                    target_df = pd.DataFrame([{'lat': tgt_lat, 'lon': tgt_lon}])
+                    
+                    inner_ring = pdk.Layer('ScatterplotLayer', data=target_df, get_position='[lon, lat]', get_fill_color=[0, 0, 0, 0], get_line_color=[255, 255, 0, 255], get_radius=150, stroked=True, filled=False, line_width_min_pixels=3)
+                    outer_ring = pdk.Layer('ScatterplotLayer', data=target_df, get_position='[lon, lat]', get_fill_color=[0, 0, 0, 0], get_line_color=[255, 255, 0, 150], get_radius=300, stroked=True, filled=False, line_width_min_pixels=1)
+                    map_layers.extend([inner_ring, outer_ring])
 
-                view_state = pdk.ViewState(
-                    latitude=st.session_state.map_center[0],
-                    longitude=st.session_state.map_center[1],
-                    zoom=st.session_state.map_zoom,
-                    pitch=0
-                )
+                # Pass a lightweight dataframe to the map
+                map_df = top_threats[['grid_lat', 'grid_lon', 'color', 'radius', 'final_risk_score', 'resolved_location']]
+                base_layer = pdk.Layer('ScatterplotLayer', data=map_df, get_position='[grid_lon, grid_lat]', get_color='color', get_radius='radius', pickable=True, opacity=0.8, stroked=True, filled=True, radius_scale=1, radius_min_pixels=5, radius_max_pixels=30)
+                map_layers.insert(0, base_layer)
 
-                tooltip = {
-                    "html": "<b>Risk Score:</b> {final_risk_score} <br/>"
-                            "<b>AI Probability:</b> {xgb_probability} <br/>"
-                            "<b>Location:</b> {resolved_location} <br/>"
-                            "<b>Action:</b> <span style='color: white;'>{action_text}</span>",
-                    "style": {"backgroundColor": "#1e212b", "color": "#8a8d93", "fontFamily": "monospace"}
-                }
-
-                r = pdk.Deck(
-                    layers=[layer],
-                    initial_view_state=view_state,
-                    tooltip=tooltip,
-                )
-
-                # Map fills the container cleanly
+                view_state = pdk.ViewState(latitude=st.session_state.map_center[0], longitude=st.session_state.map_center[1], zoom=st.session_state.map_zoom, pitch=0)
+                r = pdk.Deck(layers=map_layers, initial_view_state=view_state, tooltip={"html": "<b>Risk:</b> {final_risk_score}<br/><b>Loc:</b> {resolved_location}"})
                 st.pydeck_chart(r, use_container_width=True)
-
             else:
                 st.info("No active threats detected in this time slice.")
-
-        else:
-            # --- ANIMATED TIME-LAPSE STATE ---
-            st.markdown("<div style='border: 1px solid #31333F; border-radius: 5px; overflow: hidden;'>", unsafe_allow_html=True)
-            
-            m = folium.Map(
-                location=st.session_state.map_center, 
-                zoom_start=st.session_state.map_zoom, 
-                tiles='CartoDB dark_matter'
-            )
-
-            # Generate interpolated frames from "Now" to "+1 Hour"
-            time_data, time_index = [], []
-            for step in range(7): # 6 ten-minute intervals = 1 hour
-                fraction = step / 6.0
                 
-                # Interpolate between current live density and predicted future risk
+        else:
+            # ==========================================
+            # ANIMATED TIME-LAPSE STATE (NATIVE PYDECK)
+            # ==========================================
+            map_placeholder = st.empty()
+            time_label = st.empty()
+            
+            # Loop through 60 minutes in 10-minute intervals
+            for step in range(7):
+                if not st.session_state.is_animating:
+                    break # Allow user to stop animation midway
+                
+                fraction = step / 6.0
                 step_risk = dispatch_grid["live_density_score"] + (dispatch_grid["final_risk_score"] - dispatch_grid["live_density_score"]) * fraction
                 
                 active_step = dispatch_grid[step_risk > 15].copy()
                 active_step["weight"] = step_risk[active_step.index] / 100.0
                 
-                # Format for HeatMapWithTime
-                step_points = active_step[["grid_lat", "grid_lon", "weight"]].values.tolist() if not active_step.empty else [[0, 0, 0]]
-                time_data.append(step_points)
+                # Prevent map crashing if dataframe is empty
+                if active_step.empty:
+                    active_step = pd.DataFrame([{"grid_lat": st.session_state.map_center[0], "grid_lon": st.session_state.map_center[1], "weight": 0}])
                 
-                # Calculate timestamps for the timeline slider
+                # Native PyDeck Heatmap for smooth blending
+                layer = pdk.Layer(
+                    "HeatmapLayer",
+                    data=active_step,
+                    get_position=["grid_lon", "grid_lat"],
+                    get_weight="weight",
+                    radiusPixels=50,
+                    intensity=1.5,
+                    threshold=0.05
+                )
+                
+                view_state = pdk.ViewState(latitude=st.session_state.map_center[0], longitude=st.session_state.map_center[1], zoom=st.session_state.map_zoom, pitch=0)
+                r = pdk.Deck(layers=[layer], initial_view_state=view_state)
+                
                 step_time = simulated_now + pd.Timedelta(minutes=step*10)
-                time_index.append(step_time.strftime("%H:%M"))
+                
+                # Update UI elements dynamically
+                time_label.markdown(f"<div style='text-align:center; color:#00a4ff; font-size:14px; font-weight:bold; font-family:monospace; margin-top:10px;'>⏱ FORECAST: {step_time.strftime('%H:%M')}</div>", unsafe_allow_html=True)
+                map_placeholder.pydeck_chart(r, use_container_width=True)
+                
+                # Pause to let the user see the frame
+                time.sleep(0.6) 
 
-            HeatMapWithTime(
-                time_data, 
-                index=time_index, 
-                auto_play=True, 
-                radius=30, 
-                max_opacity=0.8, 
-                gradient={0.2: '#00a4ff', 0.6: '#ffa421', 1.0: '#ff4b4b'}
-            ).add_to(m)
-
-            # Render the HTML widget
-            components.html(m._repr_html_(), height=CONTAINER_HEIGHT)
-            st.markdown("</div>", unsafe_allow_html=True)
-            
-    # ---- RIGHT COLUMN (SCROLLABLE PANE) ----
+            # Auto-reset animation state when finished
+            if st.session_state.is_animating:
+                st.session_state.is_animating = False
+                st.rerun()
+    # ---- RIGHT COLUMN (INTEGRATED STATE) ----
     with col_right:
         with st.container(height=CONTAINER_HEIGHT):
 
-            target = top_threats.iloc[0] if not top_threats.empty else None
-            threat_level = "CRITICAL" if len(top_threats) > 5 else "ELEVATED" if len(top_threats) > 0 else "NOMINAL"
+            # ==========================================
+            # 1. WHAT-IF SIMULATOR
+            # ==========================================
+            
+            st.markdown("""<div style='display: flex; align-items: center; gap: 5px; margin-bottom: 5px;'><span style='color:#00a4ff; font-size:16px;'>🔧</span><b style='color:#8a8d93; font-size:13px; font-family:monospace; letter-spacing: 1px;'>WHAT-IF SIMULATOR</b></div>""", unsafe_allow_html=True)
+            @st.fragment
+            def render_simulator():
+                if st.session_state.selected_target is not None:
+                    tgt = st.session_state.selected_target
+                    st.markdown(f"<div style='color:#e0e0e0; font-size:11px; font-family:sans-serif; margin-bottom: 10px;'>📍 {tgt['address']}</div>", unsafe_allow_html=True)
+                    
+                    tow_pct = st.slider("TOW %", 0, 100, 50, label_visibility="collapsed")
+                    patrol_intensity = st.slider("PATROL", 0.0, 1.0, 0.50, label_visibility="collapsed")
+
+                    col_sim_btn, col_disp_btn = st.columns(2)
+                    with col_sim_btn:
+                        if st.button("SIMULATE", type="primary", use_container_width=True):
+                            base_risk = tgt['risk']
+                            base_delay = base_risk * 3.2 
+                            delay_reduction = (tow_pct / 100.0 * 0.45) + (patrol_intensity * 0.25)
+                            risk_reduction = (tow_pct / 100.0 * 0.35) + (patrol_intensity * 0.30)
+                            
+                            st.session_state.sim_data[tgt['id']] = {
+                                'base_delay': base_delay, 'sim_delay': base_delay * (1 - delay_reduction),
+                                'base_risk': base_risk, 'sim_risk': base_risk * (1 - risk_reduction),
+                                'cleared': int(base_delay * delay_reduction * 0.06),
+                                'del_pct': delay_reduction * -100, 'rsk_pct': risk_reduction * -100
+                            }
+                    
+                    with col_disp_btn:
+                        if st.button("DISPATCH", type="primary", use_container_width=True):
+                            st.session_state.queue_status[tgt['id']] = {
+                                'status': 'DISPATCHED', 'address': tgt['address'],
+                                'lat': tgt['lat'], 'lon': tgt['lon']
+                            }
+                            st.rerun()
+
+                    # Render Simulation Cards if they exist for this target
+                    if tgt['id'] in st.session_state.sim_data:
+                        s = st.session_state.sim_data[tgt['id']]
+                        val_color = "#21c354" if s['del_pct'] < 0 else "#fff"
+                        st.markdown(f"""
+                        <div style="border: 1px solid #31333F; border-radius: 4px; background-color: #0e1117; font-family: monospace; margin-bottom: 5px;">
+                          <div style="display: flex; border-bottom: 1px solid #31333F;">
+                              <div style="width: 50%; padding: 5px; border-right: 1px solid #31333F;"><span style="color:#8a8d93; font-size:9px;">BASE DELAY</span><br><span style="color:#fff; font-size:14px;">{s['base_delay']:.1f}m</span></div>
+                              <div style="width: 50%; padding: 5px;"><span style="color:#8a8d93; font-size:9px;">SIM DELAY</span><br><span style="color:{val_color}; font-size:14px;">{s['sim_delay']:.1f}m</span></div>
+                          </div>
+                          <div style="display: flex; border-bottom: 1px solid #31333F;">
+                              <div style="width: 50%; padding: 5px; border-right: 1px solid #31333F;"><span style="color:#8a8d93; font-size:9px;">BASE RISK</span><br><span style="color:#fff; font-size:14px;">{s['base_risk']:.1f}</span></div>
+                              <div style="width: 50%; padding: 5px;"><span style="color:#8a8d93; font-size:9px;">SIM RISK</span><br><span style="color:{val_color}; font-size:14px;">{s['sim_risk']:.1f}</span></div>
+                          </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("Select an item from Live Alerts or Predicted Zones to Simulate.")
+
+            render_simulator()
+
+            st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
 
             # ==========================================
-            # 🔧 WHAT-IF SIMULATOR (INTERACTIVE)
+            # 2. PREDICTED ZONES (+1H)
             # ==========================================
-            st.markdown("""
-            <div style='padding: 0px 0 5px 0;'>
-                <b style='color:#00a4ff; font-size:12px; font-family:monospace;'>🔧 WHAT-IF SIMULATOR</b><br>
-                <span style='color:#8a8d93; font-size:10px; font-family:monospace;'>Adjust deployment to model enforcement impact.</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-            # Custom styled sliders
-            st.markdown("<div style='margin-top: 5px;'><b style='color:#8a8d93; font-size:10px; font-family:monospace;'>TOW TRUCKS DISPATCHED</b></div>", unsafe_allow_html=True)
-            tow_trucks = st.slider("tow", 0, 5, 0, label_visibility="collapsed")
-
-            st.markdown("<div style='margin-top: -5px;'><b style='color:#8a8d93; font-size:10px; font-family:monospace;'>PATROL UNITS DEPLOYED</b></div>", unsafe_allow_html=True)
-            patrol_units = st.slider("patrol", 0, 10, 0, label_visibility="collapsed")
-
-            # Simulation Logic
-            if target is not None:
-                base_risk = target['final_risk_score']
-                # Tows reduce risk heavily, patrols reduce it moderately
-                new_risk = max(5.0, base_risk - (tow_trucks * 18.5) - (patrol_units * 6.2))
-
-                # Clearance time in minutes
-                est_clearance = max(10, 65 - (tow_trucks * 12) - (patrol_units * 4))
-
-                # Commuter delay minutes saved
-                delay_saved = (base_risk - new_risk) * 2.4
-            else:
-                base_risk, new_risk, est_clearance, delay_saved = 0, 0, 0, 0
-
-            # Dynamic Color Formatting for New Risk
-            risk_color = "accent-green" if new_risk < 40 else "accent-orange" if new_risk < 75 else "accent-red"
-
-            # Mini Simulated Metric Cards
-            sim1, sim2, sim3 = st.columns(3)
-            with sim1: st.markdown(f"<div class='metric-card {risk_color}' style='padding: 4px;'><div class='metric-title' style='font-size: 8px;'>NEW RISK</div><div class='metric-value' style='font-size: 16px;'>{new_risk:.1f}</div></div>", unsafe_allow_html=True)
-            with sim2: st.markdown(f"<div class='metric-card accent-blue' style='padding: 4px;'><div class='metric-title' style='font-size: 8px;'>CLEARANCE</div><div class='metric-value' style='font-size: 16px;'>{int(est_clearance)}m</div></div>", unsafe_allow_html=True)
-            with sim3: st.markdown(f"<div class='metric-card accent-green' style='padding: 4px;'><div class='metric-title' style='font-size: 8px;'>DELAY SAVED</div><div class='metric-value' style='font-size: 16px;'>{int(delay_saved)}m</div></div>", unsafe_allow_html=True)
-
-            st.markdown("<hr style='margin: 15px 0 10px 0; border-color: #31333F;'>", unsafe_allow_html=True)
-
-            # ==========================================
-            # ✨ AI ENFORCEMENT ADVISOR
-            # ==========================================
-            st.markdown("""
-            <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;'>
-                <b style='color:#00a4ff; font-size:13px; font-family:monospace;'>✨ AI ENFORCEMENT ADVISOR</b>
-                <span style='color:#666; font-size:10px; font-family:monospace; text-align:right;'>GEMINI • FLASH</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-            # Initialize states for the advisor
-            if "advisor_view" not in st.session_state: st.session_state.advisor_view = "brief"
-            if "show_terminal" not in st.session_state: st.session_state.show_terminal = False
-            if "briefing_text" not in st.session_state: st.session_state.briefing_text = ""
-
-            # Callback: Reset the terminal when changing tabs
-            def set_advisor_view(view):
-                st.session_state.advisor_view = view
-                st.session_state.show_terminal = False
-                st.session_state.briefing_text = ""
-
-            # Row 1: The three view buttons side-by-side
-            cb1, cb2, cb3 = st.columns(3)
-            cb1.button("PATROL BRIEF", type="primary" if st.session_state.advisor_view == "brief" else "secondary", on_click=set_advisor_view, args=("brief",), use_container_width=True)
-            cb2.button("SHIFT PLAN", type="primary" if st.session_state.advisor_view == "shift" else "secondary", on_click=set_advisor_view, args=("shift",), use_container_width=True)
-            cb3.button("EXEC SUMMARY", type="primary" if st.session_state.advisor_view == "exec" else "secondary", on_click=set_advisor_view, args=("exec",), use_container_width=True)
-
-            # Row 2: The Generate button spanning the full width
-            generate_clicked = st.button("⚡ GENERATE NEW BRIEFING", type="primary", use_container_width=True)
-
-            # CSS for the terminal readout box
-            st.markdown("""
-            <style>
-                .terminal-box {
-                    background-color: #0e1117;
-                    padding: 15px;
-                    border-radius: 5px;
-                    border: 1px solid #31333F;
-                    border-left: 3px solid #00a4ff;
-                    min-height: 150px;
-                    margin-top: 10px;
-                    margin-bottom: 10px;
-                    font-size: 13px;
-                    font-family: monospace;
-                    color: #e0e0e0;
-                    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-                    overflow-y: auto;
-                }
-            </style>
-            """, unsafe_allow_html=True)
-
-            # Only show the terminal if Generate was clicked or if it was already showing
-            if generate_clicked:
-                st.session_state.show_terminal = True
-
-                # --- PREPARE GEMINI PROMPT ---
-                if st.session_state.advisor_view == "brief":
-                    if target is not None:
-                        prompt = f"""
-                        Act as the AI Enforcement Advisor for the Bengaluru Traffic Police.
-                        A severe gridlock threat has been detected at: {target['resolved_location']}.
-
-                        Task: Generate a concise, tactical patrol briefing.
-                        Format with bold headers and bullet points. Include Priority, Location (Full Address), Action, and Impact. Keep it highly tactical, under 100 words.
-                        """
-                    else:
-                        prompt = "Act as the AI Enforcement Advisor for the Bengaluru Traffic Police. The city grid is stable. Give a 2-sentence confirmation that routine monitoring is active."
-
-                elif st.session_state.advisor_view == "shift":
-                    peak = df['hour'].value_counts().idxmax()
-                    prompt = f"""
-                    Act as the AI Enforcement Advisor for the Bengaluru Traffic Police.
-                    Generate a Shift Optimization Plan. Peak demand is detected at {peak}:00 hours. The current threat level is {threat_level}.
-                    Provide a tactical breakdown for Shift A, B, and C deployments. Format strictly with bolding and bullet points. Keep under 100 words.
-                    """
-
-                elif st.session_state.advisor_view == "exec":
-                    prompt = f"""
-                    Act as the AI Enforcement Advisor for the Bengaluru Traffic Police.
-                    Generate an Executive Summary.
-                    Grid Status: {threat_level}. Sensor Confidence: {confidence*100:.0f}%.
-                    Active Load: {len(live_df)} violations. Forecast (+1H): {len(top_threats)} predicted critical zones.
-                    Provide a high-level strategic note explaining the current traffic state in Bengaluru. Format tightly with bullet points. Under 100 words.
-                    """
-
-                # --- CALL GEMINI API ---
-                try:
-                    import google.generativeai as genai
-                    import os
-
-                    # Fetch API key securely
-                    api_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
-
-                    if not api_key:
-                        st.error("⚠️ GEMINI_API_KEY is missing. Please add it to your environment variables or Streamlit secrets.")
-                    else:
-                        genai.configure(api_key=api_key)
-                        model = genai.GenerativeModel('gemini-2.5-flash') # Currently the fastest supported flash model
-
-                        with st.spinner("Generating briefing..."):
-                            # Create a single placeholder for the entire terminal box content
-                            terminal_box_placeholder = st.empty()
-
-                            # Stream the response live to the UI
-                            full_response = ""
-                            response = model.generate_content(prompt, stream=True)
-                            for chunk in response:
-                                full_response += chunk.text
-                                # Update the placeholder with the content wrapped in the terminal box div
-                                terminal_box_placeholder.markdown(f"<div class='terminal-box'>{full_response}▌</div>", unsafe_allow_html=True)
-
-                            # Final render without the block cursor
-                            terminal_box_placeholder.markdown(f"<div class='terminal-box'>{full_response}</div>", unsafe_allow_html=True)
-
-                        # Save to state so it persists if the user clicks the map or a slider
-                        st.session_state.briefing_text = full_response
-
-                except Exception as e:
-                    st.error(f"AI Generation Failed: {e}. Make sure `google-generativeai` is installed and your API key is valid.")
-
-            # Keep displaying the generated text if the state is active
-            elif st.session_state.show_terminal:
-                st.markdown(f"<div class='terminal-box'>{st.session_state.briefing_text}</div>", unsafe_allow_html=True)
-            # ==========================================
-            # 🚨 DISPATCH QUEUE +1H
-            # ==========================================
-            st.markdown(f"<hr style='margin: 15px 0; border-color: #31333F;'><b style='color:#ff4b4b; font-size:13px; font-family:monospace;'>🚨 DISPATCH QUEUE +1H ({future_hour}:00)</b><hr style='margin: 10px 0; border-color: #31333F;'>", unsafe_allow_html=True)
-
+            st.markdown(f"<b style='color:#ff4b4b; font-size:13px; font-family:monospace;'>🚨 PREDICTED ZONES (+1H)</b>", unsafe_allow_html=True)
             if not top_threats.empty:
-                for idx, row in top_threats.head(4).iterrows():
+                for idx, row in top_threats.head(3).iterrows():
                     action_color = "#ff4b4b" if row['final_risk_score'] >= 75 else "#ffa421" if row['final_risk_score'] >= 50 else "#00a4ff"
                     action_label = "TOW" if row['final_risk_score'] >= 75 else "PATROL" if row['final_risk_score'] >= 50 else "MONITOR"
+                    # Instant offline lookup using the resolved_location column!
+                    raw_loc = str(row.get('resolved_location', f"Grid {row['grid_lat']:.4f}, {row['grid_lon']:.4f}"))
+                    short_addr = ", ".join(raw_loc.split(',')[:2]).strip()
 
                     cq_text, cq_btn = st.columns([8, 2])
                     with cq_text:
-                        # Display the resolved location
-                        st.markdown(f"<b style='color: {action_color}; font-size:12px; font-family:monospace;'>{action_label}</b> <span style='color: #8a8d93; font-size:12px;'>| Risk: {row['final_risk_score']:.1f}</span><br><span style='color: #fff; font-size:11px; font-family: monospace;'>Location: {row['resolved_location']}</span>", unsafe_allow_html=True)
+                        st.markdown(f"<b style='color: {action_color}; font-size:11px; font-family:monospace;'>{action_label}</b> <span style='color: #8a8d93; font-size:11px;'>| Risk: {row['final_risk_score']:.1f}</span><br><span style='color: #fff; font-size:10px; font-family: sans-serif;'>{short_addr}</span>", unsafe_allow_html=True)
                     with cq_btn:
-                        st.button("🎯", key=f"fbtn_{idx}", on_click=set_map_view, args=(row['grid_lat'], row['grid_lon'], 16))
-                    st.markdown("<hr style='margin: 5px 0; border-color: #31333F;'>", unsafe_allow_html=True)
+                        if st.button("🎯", key=f"pz_{idx}", use_container_width=True):
+                            st.session_state.selected_target = {
+                                'id': f"pz_{idx}", 'lat': row['grid_lat'], 'lon': row['grid_lon'],
+                                'risk': row['final_risk_score'], 'address': short_addr
+                            }
+                            set_map_view(row['grid_lat'], row['grid_lon'], 16)
+                            st.rerun()
+                    st.markdown("<hr style='margin: 4px 0; border-color: #31333F;'>", unsafe_allow_html=True)
 
-            st.button("🌍 Reset Map", on_click=set_map_view, args=(12.9716, 77.5946, 12), use_container_width=True)
+            # ==========================================
+            # 3. DISPATCH QUEUE (ACTIVE LIFECYCLE)
+            # ==========================================
+            st.markdown(f"<b style='color:#ffa421; font-size:13px; font-family:monospace;'>🚚 ACTIVE DISPATCH QUEUE</b>", unsafe_allow_html=True)
+            
+            def update_q(qid, stat):
+                st.session_state.queue_status[qid]['status'] = stat
+            
+            if st.session_state.queue_status:
+                for qid, qdata in list(st.session_state.queue_status.items()):
+                    stat = qdata['status']
+                    s_color = "#ff4b4b" if stat == "DISPATCHED" else "#00a4ff" if stat == "EN_ROUTE" else "#21c354"
+                    
+                    st.markdown(f"""<div style="display:flex; justify-content:space-between; font-size:10px; font-family:monospace;"><span style="color:#fff;">UNIT ACTIVE</span><span style="color:{s_color}; font-weight:bold;">{stat}</span></div><div style="color:#e0e0e0; font-size:10px; font-family:sans-serif; margin-bottom:5px;">{qdata['address']}</div>""", unsafe_allow_html=True)
+                    
+                    qb1, qb2 = st.columns([7, 3])
+                    with qb1:
+                        if stat == "DISPATCHED": st.button("MARK EN ROUTE", key=f"enr_{qid}", on_click=update_q, args=(qid, "EN_ROUTE"), use_container_width=True)
+                        elif stat == "EN_ROUTE": st.button("MARK RESOLVED", key=f"res_{qid}", on_click=update_q, args=(qid, "RESOLVED"), use_container_width=True)
+                        elif stat == "RESOLVED": st.markdown("<div style='color:#21c354; font-size:11px; font-family:monospace;'>✔️ INCIDENT CLEARED</div>", unsafe_allow_html=True)
+                    with qb2:
+                        if st.button("🎯", key=f"qf_{qid}", use_container_width=True):
+                            set_map_view(qdata['lat'], qdata['lon'], 16)
+                            st.rerun()
+                    st.markdown("<hr style='margin: 4px 0; border-color: #1e212b;'>", unsafe_allow_html=True)
+            else:
+                st.markdown("<span style='color:#8a8d93; font-size:11px; font-family:monospace;'>No active units deployed.</span><hr style='margin: 10px 0; border-color: #31333F;'>", unsafe_allow_html=True)
+
+            # ==========================================
+            # 4. AI ENFORCEMENT ADVISOR
+            # ==========================================
+            st.markdown("""<div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;'><b style='color:#00a4ff; font-size:13px; font-family:monospace;'>✨ AI ADVISOR</b><span style='color:#666; font-size:9px; font-family:monospace;'>GEMINI</span></div>""", unsafe_allow_html=True)
+            def set_adv(v): st.session_state.advisor_view = v; st.session_state.show_terminal = False
+            
+            cb1, cb2, cb3 = st.columns(3)
+            cb1.button("BRIEF", type="primary" if st.session_state.advisor_view == "brief" else "secondary", on_click=set_adv, args=("brief",), use_container_width=True)
+            cb2.button("SHIFT", type="primary" if st.session_state.advisor_view == "shift" else "secondary", on_click=set_adv, args=("shift",), use_container_width=True)
+            cb3.button("EXEC", type="primary" if st.session_state.advisor_view == "exec" else "secondary", on_click=set_adv, args=("exec",), use_container_width=True)
+
+            if st.button("⚡ GENERATE", type="primary", use_container_width=True):
+                st.session_state.show_terminal = True
+                if st.session_state.advisor_view == "brief":
+                    prompt = f"Act as AI Enforcement Advisor. Gridlock threat at: {st.session_state.selected_target['address'] if st.session_state.selected_target else 'Unknown'}. Generate a tactical patrol briefing under 100 words. Bullet points."
+                elif st.session_state.advisor_view == "shift":
+                    prompt = f"Generate Shift Optimization Plan. Peak demand: {df['hour'].value_counts().idxmax()}:00. Bullet points, under 100 words."
+                else:
+                    prompt = f"Generate Executive Summary. Threat level elevated. {len(live_df)} active violations. Bullet points, under 100 words."
+                
+                try:
+                    import google.generativeai as genai
+                    import os
+                    api_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
+                    if not api_key: st.error("⚠️ API Key missing.")
+                    else:
+                        genai.configure(api_key=api_key)
+                        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                        t_box = st.empty()
+                        full_res = ""
+                        for chunk in model.generate_content(prompt, stream=True):
+                            full_res += chunk.text
+                            t_box.markdown(f"<div class='terminal-box'>{full_res}▌</div>", unsafe_allow_html=True)
+                        t_box.markdown(f"<div class='terminal-box'>{full_res}</div>", unsafe_allow_html=True)
+                        st.session_state.briefing_text = full_res
+                except Exception as e: st.error(f"Failed: {e}")
+
+            elif st.session_state.show_terminal:
+                st.markdown(f"<div class='terminal-box'>{st.session_state.briefing_text}</div>", unsafe_allow_html=True)
 
 elif app_view == "🧠 EXPLAIN":
     # ==========================================
@@ -704,12 +502,7 @@ elif app_view == "🧠 EXPLAIN":
     st.markdown("<b style='color:#fff; font-size:14px; font-family:monospace; text-transform:uppercase;'>TOP-10 HIGHEST-PROBABILITY PREDICTIONS (LOCAL SHAP)</b><hr style='margin: 5px 0; border-color: #333;'>", unsafe_allow_html=True)
 
     if not top_threats.empty:
-        
-        @st.cache_resource
-        def load_explainer(_model):
-            return shap.TreeExplainer(_model)
-
-        explainer = load_explainer(xgb_model)
+        explainer = shap.TreeExplainer(xgb_model)
         top_10 = top_threats.head(10).copy()
         local_shap_values = explainer.shap_values(top_10[xgb_features])
 
