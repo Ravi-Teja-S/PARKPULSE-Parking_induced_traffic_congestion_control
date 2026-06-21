@@ -8,6 +8,9 @@ import altair as alt
 import shap
 import time
 import warnings
+import folium
+from folium.plugins import HeatMapWithTime
+import streamlit.components.v1 as components
 warnings.filterwarnings('ignore')
 
 # ==========================================
@@ -314,65 +317,168 @@ if app_view == "🔵 OPERATE":
             st.markdown(feed_html, unsafe_allow_html=True)
 
     # ---- CENTER COLUMN (HIGH-PERFORMANCE PYDECK MAP) ----
+    # with col_center:
+
+    #     def get_color(score):
+    #         if score >= 75: return [255, 75, 75, 200]       # Red
+    #         elif score >= 50: return [255, 164, 33, 200]    # Orange
+    #         else: return [0, 164, 255, 200]                 # Blue
+
+    #     def get_action(score):
+    #         if score >= 75: return "TOW IMMEDIATELY"
+    #         elif score >= 50: return "DEPLOY PATROL"
+    #         else: return "MONITOR"
+
+    #     if not top_threats.empty:
+    #         top_threats["color"] = top_threats["final_risk_score"].apply(get_color)
+    #         top_threats["action_text"] = top_threats["final_risk_score"].apply(get_action)
+    #         top_threats["radius"] = top_threats["final_risk_score"].apply(lambda x: max(150, x * 4))
+
+    #         layer = pdk.Layer(
+    #             'ScatterplotLayer',
+    #             data=top_threats,
+    #             get_position='[grid_lon, grid_lat]',
+    #             get_color='color',
+    #             get_radius='radius',
+    #             pickable=True,
+    #             opacity=0.8,
+    #             stroked=True,
+    #             filled=True,
+    #             radius_scale=1,
+    #             radius_min_pixels=5,
+    #             radius_max_pixels=30,
+    #         )
+
+    #         view_state = pdk.ViewState(
+    #             latitude=st.session_state.map_center[0],
+    #             longitude=st.session_state.map_center[1],
+    #             zoom=st.session_state.map_zoom,
+    #             pitch=0
+    #         )
+
+    #         tooltip = {
+    #             "html": "<b>Risk Score:</b> {final_risk_score} <br/>"
+    #                     "<b>AI Probability:</b> {xgb_probability} <br/>"
+    #                     "<b>Location:</b> {resolved_location} <br/>"
+    #                     "<b>Action:</b> <span style='color: white;'>{action_text}</span>",
+    #             "style": {"backgroundColor": "#1e212b", "color": "#8a8d93", "fontFamily": "monospace"}
+    #         }
+
+    #         r = pdk.Deck(
+    #             layers=[layer],
+    #             initial_view_state=view_state,
+    #             tooltip=tooltip,
+    #         )
+
+    #         # Map fills the container cleanly
+    #         st.pydeck_chart(r, use_container_width=True)
+
+    #     else:
+    #         st.info("No active threats detected in this time slice.")
+    # ---- CENTER COLUMN (HIGH-PERFORMANCE PYDECK MAP & ANIMATION) ----
     with col_center:
+        
+        if not st.session_state.is_animating:
+            # --- STATIC PYDECK STATE ---
+            def get_color(score):
+                if score >= 75: return [255, 75, 75, 200]       # Red
+                elif score >= 50: return [255, 164, 33, 200]    # Orange
+                else: return [0, 164, 255, 200]                 # Blue
 
-        def get_color(score):
-            if score >= 75: return [255, 75, 75, 200]       # Red
-            elif score >= 50: return [255, 164, 33, 200]    # Orange
-            else: return [0, 164, 255, 200]                 # Blue
+            def get_action(score):
+                if score >= 75: return "TOW IMMEDIATELY"
+                elif score >= 50: return "DEPLOY PATROL"
+                else: return "MONITOR"
 
-        def get_action(score):
-            if score >= 75: return "TOW IMMEDIATELY"
-            elif score >= 50: return "DEPLOY PATROL"
-            else: return "MONITOR"
+            if not top_threats.empty:
+                top_threats["color"] = top_threats["final_risk_score"].apply(get_color)
+                top_threats["action_text"] = top_threats["final_risk_score"].apply(get_action)
+                top_threats["radius"] = top_threats["final_risk_score"].apply(lambda x: max(150, x * 4))
 
-        if not top_threats.empty:
-            top_threats["color"] = top_threats["final_risk_score"].apply(get_color)
-            top_threats["action_text"] = top_threats["final_risk_score"].apply(get_action)
-            top_threats["radius"] = top_threats["final_risk_score"].apply(lambda x: max(150, x * 4))
+                layer = pdk.Layer(
+                    'ScatterplotLayer',
+                    data=top_threats,
+                    get_position='[grid_lon, grid_lat]',
+                    get_color='color',
+                    get_radius='radius',
+                    pickable=True,
+                    opacity=0.8,
+                    stroked=True,
+                    filled=True,
+                    radius_scale=1,
+                    radius_min_pixels=5,
+                    radius_max_pixels=30,
+                )
 
-            layer = pdk.Layer(
-                'ScatterplotLayer',
-                data=top_threats,
-                get_position='[grid_lon, grid_lat]',
-                get_color='color',
-                get_radius='radius',
-                pickable=True,
-                opacity=0.8,
-                stroked=True,
-                filled=True,
-                radius_scale=1,
-                radius_min_pixels=5,
-                radius_max_pixels=30,
-            )
+                view_state = pdk.ViewState(
+                    latitude=st.session_state.map_center[0],
+                    longitude=st.session_state.map_center[1],
+                    zoom=st.session_state.map_zoom,
+                    pitch=0
+                )
 
-            view_state = pdk.ViewState(
-                latitude=st.session_state.map_center[0],
-                longitude=st.session_state.map_center[1],
-                zoom=st.session_state.map_zoom,
-                pitch=0
-            )
+                tooltip = {
+                    "html": "<b>Risk Score:</b> {final_risk_score} <br/>"
+                            "<b>AI Probability:</b> {xgb_probability} <br/>"
+                            "<b>Location:</b> {resolved_location} <br/>"
+                            "<b>Action:</b> <span style='color: white;'>{action_text}</span>",
+                    "style": {"backgroundColor": "#1e212b", "color": "#8a8d93", "fontFamily": "monospace"}
+                }
 
-            tooltip = {
-                "html": "<b>Risk Score:</b> {final_risk_score} <br/>"
-                        "<b>AI Probability:</b> {xgb_probability} <br/>"
-                        "<b>Location:</b> {resolved_location} <br/>"
-                        "<b>Action:</b> <span style='color: white;'>{action_text}</span>",
-                "style": {"backgroundColor": "#1e212b", "color": "#8a8d93", "fontFamily": "monospace"}
-            }
+                r = pdk.Deck(
+                    layers=[layer],
+                    initial_view_state=view_state,
+                    tooltip=tooltip,
+                )
 
-            r = pdk.Deck(
-                layers=[layer],
-                initial_view_state=view_state,
-                tooltip=tooltip,
-            )
+                # Map fills the container cleanly
+                st.pydeck_chart(r, use_container_width=True)
 
-            # Map fills the container cleanly
-            st.pydeck_chart(r, use_container_width=True)
+            else:
+                st.info("No active threats detected in this time slice.")
 
         else:
-            st.info("No active threats detected in this time slice.")
+            # --- ANIMATED TIME-LAPSE STATE ---
+            st.markdown("<div style='border: 1px solid #31333F; border-radius: 5px; overflow: hidden;'>", unsafe_allow_html=True)
+            
+            m = folium.Map(
+                location=st.session_state.map_center, 
+                zoom_start=st.session_state.map_zoom, 
+                tiles='CartoDB dark_matter'
+            )
 
+            # Generate interpolated frames from "Now" to "+1 Hour"
+            time_data, time_index = [], []
+            for step in range(7): # 6 ten-minute intervals = 1 hour
+                fraction = step / 6.0
+                
+                # Interpolate between current live density and predicted future risk
+                step_risk = dispatch_grid["live_density_score"] + (dispatch_grid["final_risk_score"] - dispatch_grid["live_density_score"]) * fraction
+                
+                active_step = dispatch_grid[step_risk > 15].copy()
+                active_step["weight"] = step_risk[active_step.index] / 100.0
+                
+                # Format for HeatMapWithTime
+                step_points = active_step[["grid_lat", "grid_lon", "weight"]].values.tolist() if not active_step.empty else [[0, 0, 0]]
+                time_data.append(step_points)
+                
+                # Calculate timestamps for the timeline slider
+                step_time = simulated_now + pd.Timedelta(minutes=step*10)
+                time_index.append(step_time.strftime("%H:%M"))
+
+            HeatMapWithTime(
+                time_data, 
+                index=time_index, 
+                auto_play=True, 
+                radius=30, 
+                max_opacity=0.8, 
+                gradient={0.2: '#00a4ff', 0.6: '#ffa421', 1.0: '#ff4b4b'}
+            ).add_to(m)
+
+            # Render the HTML widget
+            components.html(m._repr_html_(), height=CONTAINER_HEIGHT)
+            st.markdown("</div>", unsafe_allow_html=True)
+            
     # ---- RIGHT COLUMN (SCROLLABLE PANE) ----
     with col_right:
         with st.container(height=CONTAINER_HEIGHT):

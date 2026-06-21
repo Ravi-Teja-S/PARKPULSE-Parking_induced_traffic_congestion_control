@@ -10,3 +10,4 @@ pydeck
 altair
 shap
 google-generativeai
+folium
