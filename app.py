@@ -233,8 +233,10 @@ xgb_features = ["hour", "dow", "historical_risk_score", "lag_1h_violations", "ro
 dispatch_grid["xgb_probability"] = xgb_model.predict_proba(dispatch_grid[xgb_features])[:, 1]
 W_live, W_hist, W_xgb = (0.4, 0.2, 0.4) if confidence >= 0.30 else (0.0, 0.5, 0.5)
 dispatch_grid["final_risk_score"] = ((dispatch_grid["live_density_score"] * W_live) + (dispatch_grid["historical_risk_score"] * W_hist) + ((dispatch_grid["xgb_probability"] * 100) * W_xgb))
-top_threats = dispatch_grid[dispatch_grid["final_risk_score"] > 20].sort_values("final_risk_score", ascending=False).reset_index(drop=True)
-
+top_threats = dispatch_grid.sort_values(
+    "final_risk_score",
+    ascending=False
+).head(20)
 # Merge resolved locations into top_threats
 top_threats = top_threats.merge(grid_location_map, on=['grid_lat', 'grid_lon'], how='left')
 top_threats['resolved_location'] = top_threats['resolved_location'].fillna('Unknown Location')
