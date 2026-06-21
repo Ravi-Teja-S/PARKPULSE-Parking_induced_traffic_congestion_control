@@ -1,0 +1,12 @@
+streamlit
+pandas
+numpy
+pyarrow
+scikit-learn
+xgboost
+joblib
+hdbscan
+pydeck
+altair
+shap
+google-generativeai
