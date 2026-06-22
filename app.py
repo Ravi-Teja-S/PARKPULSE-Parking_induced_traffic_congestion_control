@@ -230,7 +230,7 @@ CONTAINER_HEIGHT = 500
 # ==========================================
 # VIEW ROUTING
 # ==========================================
-if app_view == "🔵 OPERATE":
+if app_view == "OPERATE":
     col_left, col_center, col_right = st.columns([2.5, 5.5, 3.5])
 
     # ---- LEFT COLUMN ----
@@ -522,7 +522,7 @@ if app_view == "🔵 OPERATE":
             elif st.session_state.show_terminal:
                 st.markdown(f"<div class='terminal-box'>{st.session_state.briefing_text}</div>", unsafe_allow_html=True)
 
-elif app_view == "🧠 EXPLAIN":
+elif app_view == "EXPLAIN":
     # ==========================================
     # SHAP EXPLAINABILITY TAB
     # (Removed fixed container height so the long list of explanations can flow naturally)
