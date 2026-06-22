@@ -85,6 +85,8 @@ st.markdown("""
     div.stButton > button:first-child { font-family: monospace; font-weight: bold; font-size: 12px; border-radius: 0px; border: 1px solid #31333F; }
     
     /* CUSTOM RADIO PILLS */
+    /* FORCE RADIO CONTAINER TO ALIGN RIGHT */
+    div[data-testid="stRadio"] { display: flex; justify-content: flex-end; margin-top: 5px; }
     div[data-testid="stRadio"] > div[role="radiogroup"] { display: inline-flex; background-color: #0e1117; border-radius: 50px; padding: 4px; border: 1px solid #31333F; gap: 4px; }
     div[data-testid="stRadio"] div[role="radiogroup"] label { background-color: transparent; padding: 6px 18px !important; border-radius: 50px !important; cursor: pointer; margin: 0; transition: all 0.2s ease; border: 1px solid transparent; }
     div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
@@ -147,17 +149,19 @@ def load_model():
 df, history, bias, shap_df, grid_location_map = load_data()
 xgb_model = load_model()
 
+
 # ==========================================
 # TOP RIBBON & CONTROLS
 # ==========================================
-top1, top2 = st.columns([6, 4])
+top1, top2 = st.columns([7, 3]) # Widened the left column, shrank the right
 with top1:
-    st.markdown("<h4 style='color: #00a4ff; margin: 0px; padding: 0px; font-family: monospace;'>PARKPULSE · COMMAND CENTER</h4>", unsafe_allow_html=True)
-    st.markdown("<div style='color: #8a8d93; font-size: 10px; font-family: monospace; letter-spacing: 1px; margin-top: -5px;'>BENGALURU TRAFFIC POLICE · AI ENFORCEMENT CONSOLE</div>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #00a4ff; margin-bottom: 0px; font-family: monospace;'>PARKPULSE · COMMAND CENTER</h3>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #8a8d93; font-size: 11px; font-family: monospace; letter-spacing: 1px;'>BENGALURU TRAFFIC POLICE · AI ENFORCEMENT CONSOLE</span>", unsafe_allow_html=True)
 with top2:
-    app_view = st.radio("VIEW", ["🔵 OPERATE", "🧠 EXPLAIN"], horizontal=True, label_visibility="collapsed")
-
-st.markdown("<hr style='margin: 2px 0px 8px 0px; border-color: #333;'>", unsafe_allow_html=True)
+    # Removed the <br> so it aligns perfectly with the title text
+    app_view = st.radio("VIEW", ["OPERATE", "EXPLAIN"], horizontal=True, label_visibility="collapsed")
+    
+st.markdown("<hr style='margin: 5px 0px 10px 0px; border-color: #333;'>", unsafe_allow_html=True)
 
 col_anim, col_date, col_slider, col_sim = st.columns([1.5, 2, 6, 2.5])
 with col_anim: st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
