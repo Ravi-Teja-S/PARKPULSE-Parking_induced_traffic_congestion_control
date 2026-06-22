@@ -650,7 +650,7 @@ st.markdown("""
     }
 
     /* ELIMINATE COLUMN GAPS FOR PERFECT GRID */
-    [data-testid="stHorizontalBlock"] { gap: 1px !important; }
+    [data-testid="stHorizontalBlock"] { gap: 5px !important; }
     [data-testid="column"] { padding: 2px 5px !important; } /* 5px inner padding so text doesn't touch edges */
 
     header {display: none !important;} footer {display: none !important;}
