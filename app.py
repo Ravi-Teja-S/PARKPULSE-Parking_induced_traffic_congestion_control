@@ -391,20 +391,21 @@ if app_view == "OPERATE":
                     
                     # --- THE FIX: Custom styled labels injected above the sliders ---
                     st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>TOW DEPLOYMENT (%)</div>", unsafe_allow_html=True)
-                    tow_pct = st.slider("TOW %", 0, 100, 50, label_visibility="collapsed")
+                    tow_pct = st.slider("TOW %", 0, 5, 1, label_visibility="collapsed")
                     
                     st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>PATROL INTENSITY (0.0 - 1.0)</div>", unsafe_allow_html=True)
-                    patrol_intensity = st.slider("PATROL", 0.0, 1.0, 0.50, label_visibility="collapsed")
+                    patrol_intensity = st.slider("PATROL", 0, 10, 2, label_visibility="collapsed")
                     # ---------------------------------------------------------------
 
                     col_sim_btn, col_disp_btn = st.columns(2)
                     with col_sim_btn:
                         if st.button("SIMULATE", type="primary", use_container_width=True):
+                            effective_tow = tow_vehicles / 5.0     
+                            effective_patrol = patrol_vehicles / 10.0
                             base_risk = tgt['risk']
                             base_delay = base_risk * 3.2 
-                            delay_reduction = (tow_pct / 100.0 * 0.45) + (patrol_intensity * 0.25)
-                            risk_reduction = (tow_pct / 100.0 * 0.35) + (patrol_intensity * 0.30)
-                            
+                            delay_reduction = min((effective_tow * 0.45) + (effective_patrol * 0.25), 0.95)
+                            risk_reduction = min((effective_tow * 0.35) + (effective_patrol * 0.30), 0.95)
                             st.session_state.sim_data[tgt['id']] = {
                                 'base_delay': base_delay, 'sim_delay': base_delay * (1 - delay_reduction),
                                 'base_risk': base_risk, 'sim_risk': base_risk * (1 - risk_reduction),
