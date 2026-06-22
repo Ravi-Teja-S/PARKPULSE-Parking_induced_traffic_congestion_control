@@ -373,10 +373,10 @@ if app_view == "🔵 OPERATE":
                     st.markdown(f"<div style='color:#e0e0e0; font-size:11px; font-family:sans-serif; margin-bottom: 10px;'>📍 {tgt['address']}</div>", unsafe_allow_html=True)
                     
                     # --- THE FIX: Custom styled labels injected above the sliders ---
-                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-10px;'>TOW DEPLOYMENT (%)</div>", unsafe_allow_html=True)
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-5px;'>TOW DEPLOYMENT (%)</div>", unsafe_allow_html=True)
                     tow_pct = st.slider("TOW %", 0, 100, 50, label_visibility="collapsed")
                     
-                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-10px;'>PATROL INTENSITY (0.0 - 1.0)</div>", unsafe_allow_html=True)
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-5px;'>PATROL INTENSITY (0.0 - 1.0)</div>", unsafe_allow_html=True)
                     patrol_intensity = st.slider("PATROL", 0.0, 1.0, 0.50, label_visibility="collapsed")
                     # ---------------------------------------------------------------
 
