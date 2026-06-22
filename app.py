@@ -400,8 +400,8 @@ if app_view == "OPERATE":
                     col_sim_btn, col_disp_btn = st.columns(2)
                     with col_sim_btn:
                         if st.button("SIMULATE", type="primary", use_container_width=True):
-                            effective_tow = tow_vehicles / 5.0     
-                            effective_patrol = patrol_vehicles / 10.0
+                            effective_tow = tow_pct / 5.0     
+                            effective_patrol = patrol_intensity / 10.0
                             base_risk = tgt['risk']
                             base_delay = base_risk * 3.2 
                             delay_reduction = (tow_pct / 100.0 * 0.45) + (patrol_intensity * 0.25)
