@@ -391,10 +391,10 @@ if app_view == "OPERATE":
                     
                     # --- THE FIX: Custom styled labels injected above the sliders ---
                     st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>TOW DEPLOYMENT</div>", unsafe_allow_html=True)
-                    tow_pct = st.slider("TOW %", 0, 5, 1, label_visibility="collapsed")
+                    tow_vehicles = st.slider("TOW %", 0, 5, 1, label_visibility="collapsed")
                     
                     st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>PATROL INTENSITY</div>", unsafe_allow_html=True)
-                    patrol_intensity = st.slider("PATROL", 0, 10, 2, label_visibility="collapsed")
+                    patrol_vehicles = st.slider("PATROL", 0, 10, 2, label_visibility="collapsed")
                     # ---------------------------------------------------------------
 
                     col_sim_btn, col_disp_btn = st.columns(2)
