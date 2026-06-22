@@ -58,8 +58,8 @@ st.markdown("""
     .block-container { 
         padding-top: 1rem !important;  /* Slight top buffer so header doesn't clip */
         padding-bottom: 0rem !important; 
-        padding-left: 0rem !important;  /* Snaps to left edge */
-        padding-right: 0rem !important; /* Snaps to right edge */
+        padding-left: 0.5rem !important;  /* Snaps to left edge */
+        padding-right: 0.5rem !important; /* Snaps to right edge */
         max-width: 100% !important;     /* Forces absolute full width */
     }
 
