@@ -86,7 +86,12 @@ st.markdown("""
     
     /* CUSTOM RADIO PILLS */
     /* FORCE RADIO CONTAINER TO ALIGN RIGHT */
-    div[data-testid="stRadio"] { display: flex; justify-content: flex-end; margin-top: 5px; }
+    div[data-testid="stRadio"] { 
+        display: flex !important; 
+        justify-content: flex-end !important; 
+        width: 100% !important; 
+        margin-top: 5px; 
+    }
     div[data-testid="stRadio"] > div[role="radiogroup"] { display: inline-flex; background-color: #0e1117; border-radius: 50px; padding: 4px; border: 1px solid #31333F; gap: 4px; }
     div[data-testid="stRadio"] div[role="radiogroup"] label { background-color: transparent; padding: 6px 18px !important; border-radius: 50px !important; cursor: pointer; margin: 0; transition: all 0.2s ease; border: 1px solid transparent; }
     div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
@@ -161,7 +166,7 @@ with top2:
     # Removed the <br> so it aligns perfectly with the title text
     app_view = st.radio("VIEW", ["OPERATE", "EXPLAIN"], horizontal=True, label_visibility="collapsed")
     
-st.markdown("<hr style='margin: 5px 0px 10px 0px; border-color: #333;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin: 5px 0px 5px 0px; border-color: #333;'>", unsafe_allow_html=True)
 
 col_anim, col_date, col_slider, col_sim = st.columns([1.5, 2, 6, 2.5])
 with col_anim: st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
