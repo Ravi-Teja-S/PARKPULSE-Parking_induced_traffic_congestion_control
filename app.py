@@ -65,7 +65,7 @@ st.markdown("""
 
     /* ELIMINATE COLUMN GAPS FOR PERFECT GRID */
     [data-testid="stHorizontalBlock"] { gap: 0px !important; }
-    [data-testid="column"] { padding: 0px 5px !important; } /* 5px inner padding so text doesn't touch edges */
+    [data-testid="column"] { padding: 2px 5px !important; } /* 5px inner padding so text doesn't touch edges */
 
     header {display: none !important;} footer {display: none !important;}
     ::-webkit-scrollbar { width: 6px; height: 6px; }
