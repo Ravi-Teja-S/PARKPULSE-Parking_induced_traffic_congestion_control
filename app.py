@@ -67,7 +67,7 @@ st.markdown("""
 
     /* REDUCE VERTICAL GAP BETWEEN ELEMENTS */
     [data-testid="stVerticalBlock"] { 
-        gap: 0.5rem !important; 
+        gap: 0.75rem !important; 
     }
     
     /* ELIMINATE COLUMN GAPS FOR PERFECT GRID */
