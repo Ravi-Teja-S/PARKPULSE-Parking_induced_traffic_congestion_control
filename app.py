@@ -58,7 +58,7 @@ st.markdown("""
     /* 1. ABSOLUTE VIEWPORT LOCK & GRID SNAPPING */
     [data-testid="stAppViewContainer"] { background-color: #0e1117; overflow: hidden !important; }
     .block-container { 
-        padding-top: 1rem !important;  /* Slight top buffer so header doesn't clip */
+        padding-top: 0.5rem !important;  /* Slight top buffer so header doesn't clip */
         padding-bottom: 0rem !important; 
         padding-left: 0.5rem !important;  /* Snaps to left edge */
         padding-right: 0.5rem !important; /* Snaps to right edge */
