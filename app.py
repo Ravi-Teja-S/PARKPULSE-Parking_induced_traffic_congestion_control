@@ -169,7 +169,7 @@ with top2:
     # Removed the <br> so it aligns perfectly with the title text
     app_view = st.radio("VIEW", ["OPERATE", "EXPLAIN"], horizontal=True, label_visibility="collapsed")
     
-st.markdown("<hr style='margin: 5px -10px 5px -10px; border-color: #333;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin: 2px 0px 2px 0px; border-color: #333;'>", unsafe_allow_html=True)
 
 col_anim, col_date, col_slider, col_sim = st.columns([1.5, 2, 6, 2.5])
 with col_anim: st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
