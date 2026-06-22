@@ -65,6 +65,11 @@ st.markdown("""
         max-width: 100% !important;     /* Forces absolute full width */
     }
 
+    /* REDUCE VERTICAL GAP BETWEEN ELEMENTS */
+    [data-testid="stVerticalBlock"] { 
+        gap: 0.5rem !important; 
+    }
+    
     /* ELIMINATE COLUMN GAPS FOR PERFECT GRID */
     [data-testid="stHorizontalBlock"] { gap: 0px !important; }
     [data-testid="column"] { padding: 2px 5px !important; } /* 5px inner padding so text doesn't touch edges */
