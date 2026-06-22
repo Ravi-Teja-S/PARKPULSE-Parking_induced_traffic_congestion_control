@@ -221,7 +221,7 @@ with m5: st.markdown(f"<div class='metric-card accent-green'><div class='metric-
 with m6: st.markdown(f"<div class='metric-card accent-green'><div class='metric-title'>Peak Hour</div><div class='metric-value'>📍 {df['hour'].value_counts().idxmax()}:00</div></div>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
-CONTAINER_HEIGHT = 450
+CONTAINER_HEIGHT = 500
 
 # ==========================================
 # VIEW ROUTING
