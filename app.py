@@ -360,7 +360,7 @@ if app_view == "🔵 OPERATE":
     # ---- RIGHT COLUMN (INTEGRATED STATE) ----
     with col_right:
         with st.container(height=CONTAINER_HEIGHT):
-
+            
             # ==========================================
             # 1. WHAT-IF SIMULATOR
             # ==========================================
@@ -372,8 +372,13 @@ if app_view == "🔵 OPERATE":
                     tgt = st.session_state.selected_target
                     st.markdown(f"<div style='color:#e0e0e0; font-size:11px; font-family:sans-serif; margin-bottom: 10px;'>📍 {tgt['address']}</div>", unsafe_allow_html=True)
                     
+                    # --- THE FIX: Custom styled labels injected above the sliders ---
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-10px;'>TOW DEPLOYMENT (%)</div>", unsafe_allow_html=True)
                     tow_pct = st.slider("TOW %", 0, 100, 50, label_visibility="collapsed")
+                    
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:-10px;'>PATROL INTENSITY (0.0 - 1.0)</div>", unsafe_allow_html=True)
                     patrol_intensity = st.slider("PATROL", 0.0, 1.0, 0.50, label_visibility="collapsed")
+                    # ---------------------------------------------------------------
 
                     col_sim_btn, col_disp_btn = st.columns(2)
                     with col_sim_btn:
@@ -418,7 +423,6 @@ if app_view == "🔵 OPERATE":
                     st.info("Select an item from Live Alerts or Predicted Zones to Simulate.")
 
             render_simulator()
-
             st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
 
             # ==========================================
