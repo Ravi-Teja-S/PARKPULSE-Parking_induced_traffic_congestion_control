@@ -390,11 +390,11 @@ if app_view == "OPERATE":
                     st.markdown(f"<div style='color:#e0e0e0; font-size:11px; font-family:sans-serif; margin-bottom: 10px;'>📍 {tgt['address']}</div>", unsafe_allow_html=True)
                     
                     # --- THE FIX: Custom styled labels injected above the sliders ---
-                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>TOW DEPLOYMENT</div>", unsafe_allow_html=True)
-                    tow_vehicles = st.slider("TOW %", 0, 5, 1, label_visibility="collapsed")
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>TOW DEPLOYMENT (%)</div>", unsafe_allow_html=True)
+                    tow_pct = st.slider("TOW %", 0, 100, 50, label_visibility="collapsed")
                     
-                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>PATROL INTENSITY</div>", unsafe_allow_html=True)
-                    patrol_vehicles = st.slider("PATROL", 0, 10, 2, label_visibility="collapsed")
+                    st.markdown("<div style='color:#8a8d93; font-size:10px; font-family:monospace; margin-bottom:2px;'>PATROL INTENSITY (0-1)</div>", unsafe_allow_html=True)
+                    patrol_intensity = st.slider("PATROL", 0.0, 1.0, 0.50, label_visibility="collapsed")
                     # ---------------------------------------------------------------
 
                     col_sim_btn, col_disp_btn = st.columns(2)
@@ -404,8 +404,8 @@ if app_view == "OPERATE":
                             effective_patrol = patrol_vehicles / 10.0
                             base_risk = tgt['risk']
                             base_delay = base_risk * 3.2 
-                            delay_reduction = min((effective_tow * 0.45) + (effective_patrol * 0.25), 0.95)
-                            risk_reduction = min((effective_tow * 0.35) + (effective_patrol * 0.30), 0.95)
+                            delay_reduction = (tow_pct / 100.0 * 0.45) + (patrol_intensity * 0.25)
+                            risk_reduction = (tow_pct / 100.0 * 0.35) + (patrol_intensity * 0.30)
                             st.session_state.sim_data[tgt['id']] = {
                                 'base_delay': base_delay, 'sim_delay': base_delay * (1 - delay_reduction),
                                 'base_risk': base_risk, 'sim_risk': base_risk * (1 - risk_reduction),
