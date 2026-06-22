@@ -163,13 +163,13 @@ xgb_model = load_model()
 # ==========================================
 top1, top2 = st.columns([7, 3]) # Widened the left column, shrank the right
 with top1:
-    st.markdown("<h3 style='color: #00a4ff; margin-bottom: -10px; font-family: monospace;'>PARKPULSE · COMMAND CENTER</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #00a4ff;padding-top: 0; margin-bottom: -10px; font-family: monospace;'>PARKPULSE · COMMAND CENTER</h3>", unsafe_allow_html=True)
     st.markdown("<span style='color: #8a8d93; font-size: 11px; font-family: monospace; letter-spacing: 1px;'>BENGALURU TRAFFIC POLICE · AI ENFORCEMENT CONSOLE</span>", unsafe_allow_html=True)
 with top2:
     # Removed the <br> so it aligns perfectly with the title text
     app_view = st.radio("VIEW", ["OPERATE", "EXPLAIN"], horizontal=True, label_visibility="collapsed")
     
-st.markdown("<hr style='margin: 2px 0px 2px 0px; border-color: #333;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin: -2px -10px -2px -10px; border-color: #333;'>", unsafe_allow_html=True)
 
 col_anim, col_date, col_slider, col_sim = st.columns([1.5, 2, 6, 2.5])
 with col_anim: st.button("▷ ANIMATE" if not st.session_state.is_animating else "⏹ STOP", on_click=toggle_animation, use_container_width=True)
