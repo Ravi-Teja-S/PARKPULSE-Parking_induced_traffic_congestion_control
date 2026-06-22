@@ -20,19 +20,61 @@ warnings.filterwarnings('ignore')
 # ==========================================
 st.set_page_config(page_title="ParkPulse Command Center", layout="wide", initial_sidebar_state="collapsed")
 
+# st.markdown("""
+# <style>
+#     /* 1. PREVENT GLOBAL SCROLL BAR JUMPING BUT ALLOW SCROLLING */
+#     [data-testid="stAppViewContainer"] { background-color: #0e1117; overflow-y: auto !important; }
+#     .block-container { padding-top: 0rem !important; padding-bottom: 2rem !important; max-width: 98% !important; }
+#     header {display: none !important;} footer {display: none !important;}
+#     ::-webkit-scrollbar { width: 6px; height: 6px; }
+#     ::-webkit-scrollbar-track { background: transparent; }
+#     ::-webkit-scrollbar-thumb { background: #31333F; border-radius: 4px; }
+#     ::-webkit-scrollbar-thumb:hover { background: #00a4ff; }
+
+#     /* 2. METRIC CARDS */
+#     .metric-card { background-color: #1e212b; border-top: 3px solid #31333F; padding: 4px; border-radius: 5px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+#     .metric-title { color: #8a8d93; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+#     .metric-value { color: #ffffff; font-size: 18px; font-weight: 700; margin: 0px; font-family: monospace;}
+#     .accent-red { border-top-color: #ff4b4b; } .accent-blue { border-top-color: #00a4ff; }
+#     .accent-orange { border-top-color: #ffa421; } .accent-green { border-top-color: #21c354; }
+#     .sub-text { color: #666; font-size: 8px; font-family: monospace; line-height: 1;}
+
+#     /* 3. COMPONENT STYLING */
+#     div.stButton > button:first-child { font-family: monospace; font-weight: bold; font-size: 12px; border-radius: 4px; border: 1px solid #31333F; }
+#     div[data-testid="stRadio"] > div[role="radiogroup"] { display: inline-flex; background-color: #0e1117; border-radius: 50px; padding: 4px; border: 1px solid #31333F; gap: 4px; }
+#     div[data-testid="stRadio"] div[role="radiogroup"] label { background-color: transparent; padding: 6px 18px !important; border-radius: 50px !important; cursor: pointer; margin: 0; transition: all 0.2s ease; border: 1px solid transparent; }
+#     div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
+#     div[data-testid="stRadio"] div[role="radiogroup"] label p { margin: 0 !important; font-family: monospace; font-size: 12px; font-weight: 700; color: #8a8d93; }
+#     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) { background-color: #1e212b !important; border: 1px solid #31333F; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+#     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p { color: #ffffff !important; }
+    
+#     .terminal-box { background-color: #0e1117; padding: 15px; border-radius: 5px; border: 1px solid #31333F; border-left: 3px solid #00a4ff; min-height: 150px; margin-top: 10px; margin-bottom: 10px; font-size: 13px; font-family: monospace; color: #e0e0e0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); overflow-y: auto; }
+# </style>
+# """, unsafe_allow_html=True)
 st.markdown("""
 <style>
-    /* 1. PREVENT GLOBAL SCROLL BAR JUMPING BUT ALLOW SCROLLING */
-    [data-testid="stAppViewContainer"] { background-color: #0e1117; overflow-y: auto !important; }
-    .block-container { padding-top: 0rem !important; padding-bottom: 2rem !important; max-width: 98% !important; }
+    /* 1. ABSOLUTE VIEWPORT LOCK & GRID SNAPPING */
+    [data-testid="stAppViewContainer"] { background-color: #0e1117; overflow: hidden !important; }
+    .block-container { 
+        padding-top: 1rem !important;  /* Slight top buffer so header doesn't clip */
+        padding-bottom: 0rem !important; 
+        padding-left: 0rem !important;  /* Snaps to left edge */
+        padding-right: 0rem !important; /* Snaps to right edge */
+        max-width: 100% !important;     /* Forces absolute full width */
+    }
+
+    /* ELIMINATE COLUMN GAPS FOR PERFECT GRID */
+    [data-testid="stHorizontalBlock"] { gap: 0px !important; }
+    [data-testid="column"] { padding: 0px 5px !important; } /* 5px inner padding so text doesn't touch edges */
+
     header {display: none !important;} footer {display: none !important;}
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #31333F; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #00a4ff; }
 
-    /* 2. METRIC CARDS */
-    .metric-card { background-color: #1e212b; border-top: 3px solid #31333F; padding: 4px; border-radius: 5px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    /* 2. METRIC CARDS (Squared off edges for grid layout) */
+    .metric-card { background-color: #1e212b; border-top: 3px solid #31333F; padding: 4px; border-radius: 0px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     .metric-title { color: #8a8d93; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
     .metric-value { color: #ffffff; font-size: 18px; font-weight: 700; margin: 0px; font-family: monospace;}
     .accent-red { border-top-color: #ff4b4b; } .accent-blue { border-top-color: #00a4ff; }
@@ -40,7 +82,9 @@ st.markdown("""
     .sub-text { color: #666; font-size: 8px; font-family: monospace; line-height: 1;}
 
     /* 3. COMPONENT STYLING */
-    div.stButton > button:first-child { font-family: monospace; font-weight: bold; font-size: 12px; border-radius: 4px; border: 1px solid #31333F; }
+    div.stButton > button:first-child { font-family: monospace; font-weight: bold; font-size: 12px; border-radius: 0px; border: 1px solid #31333F; }
+    
+    /* CUSTOM RADIO PILLS */
     div[data-testid="stRadio"] > div[role="radiogroup"] { display: inline-flex; background-color: #0e1117; border-radius: 50px; padding: 4px; border: 1px solid #31333F; gap: 4px; }
     div[data-testid="stRadio"] div[role="radiogroup"] label { background-color: transparent; padding: 6px 18px !important; border-radius: 50px !important; cursor: pointer; margin: 0; transition: all 0.2s ease; border: 1px solid transparent; }
     div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
@@ -48,6 +92,7 @@ st.markdown("""
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) { background-color: #1e212b !important; border: 1px solid #31333F; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p { color: #ffffff !important; }
     
+    /* CUSTOM TERMINAL BOX */
     .terminal-box { background-color: #0e1117; padding: 15px; border-radius: 5px; border: 1px solid #31333F; border-left: 3px solid #00a4ff; min-height: 150px; margin-top: 10px; margin-bottom: 10px; font-size: 13px; font-family: monospace; color: #e0e0e0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); overflow-y: auto; }
 </style>
 """, unsafe_allow_html=True)
